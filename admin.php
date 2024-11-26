@@ -2,7 +2,7 @@
 session_start();
 
 // Memastikan hanya admin yang dapat mengakses halaman ini
-if ($_SESSION['role'] != 'user') {
+if ($_SESSION['role'] != 'admin') {
     session_destroy();
     echo "Anda bukan role admin";
     header('location:index.php');
@@ -25,7 +25,8 @@ if ($_SESSION['role'] != 'user') {
     <div class="container mt-5">
         <!-- Menampilkan pesan selamat datang dengan class Bootstrap -->
         <div class="alert alert-success" role="alert">
-            <h1>Selamat datang <?php echo $_SESSION['name']; ?></h1>
+            <h1>Selamat datang, Admin!</h1>
+            <p>Anda memiliki akses penuh ke halaman ini.</p>
         </div>
 
         <!-- Tombol Logout menggunakan <a> -->
