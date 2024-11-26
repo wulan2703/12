@@ -1,8 +1,9 @@
 <?php
-
+session_start();
 require './../config/db.php';
 
-if (isset($_POST['submit'])) { // Menangani form submit
+if (isset($_POST['submit'])) {
+
     $email = $_POST['email'];
     $password = $_POST['password'];
 
@@ -12,19 +13,31 @@ if (isset($_POST['submit'])) { // Menangani form submit
     if (mysqli_num_rows($user) > 0) {
         $data = mysqli_fetch_assoc($user);
 
-        // Memeriksa apakah password yang dimasukkan sesuai dengan yang ada di database
+        // Verifikasi password yang dimasukkan dengan hash yang ada di database
         if (password_verify($password, $data['password'])) {
-            echo "Selamat datang " . $data['name'];
-            die;
+            // Set session untuk name dan role
+            $_SESSION['name'] = $data['name'];
+            $_SESSION['role'] = $data['role'];
 
-            // Proses otorisasi dan redirect bisa ditambahkan di sini
+            // Redirect berdasarkan role
+            if ($_SESSION['role'] == 'admin') {
+                header('location:./../admin.php');  // Halaman admin jika role adalah 'admin'
+                exit;  // Menghentikan eksekusi kode setelah header
+            } else {
+                header('location:./../profile.php');  // Halaman profil jika bukan 'admin'
+                exit;  // Menghentikan eksekusi kode setelah header
+            }
+
         } else {
-            echo "Password salah";
-            die;
+            // Password salah
+            header('location:./../profile.php');
+            exit;  // Menghentikan eksekusi kode setelah header
         }
+
     } else {
+        // Email tidak ditemukan
         echo "Email atau password salah";
-        die;
+        exit;  // Menghentikan eksekusi setelah pesan
     }
 }
 ?>
